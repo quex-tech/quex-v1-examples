@@ -1,3 +1,18 @@
+
+## Prerequisities
+
+Install [openzeppelin](https://docs.openzeppelin.com/contracts/5.x/) contracts, e.g.
+
+```shell
+npm install @openzeppelin/contracts
+```
+
+
+
+=========================
+| OLD SEction to delete |
+=========================
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**

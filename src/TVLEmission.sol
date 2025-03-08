@@ -18,7 +18,7 @@ contract TVLEmission is Ownable {
     address private _treasury;
     uint256 private _requestId;
     FlowResponse lastUpdate;
-    ParametricToken parametricToken;
+    ParametricToken public parametricToken;
 
     constructor(address treasuryAddress) Ownable(msg.sender) {
         parametricToken = new ParametricToken();

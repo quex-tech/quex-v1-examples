@@ -15,13 +15,19 @@ forge install quex-tech/quex-v1-interfaces
 
 Put your private key to environment variables;
 ```shell
-export SECRET=0xYourPrivateKey
+export SECRET=<0xYourPrivateKey>
 ```
 
 
 ## Build and deploy contracts
 
-Expect response like:
+Run the following command to build and deploy the contracts:
+
+```shell
+forge script script/DeployTVLEmissionScript.s.sol --broadcast
+```
+
+If successful, you’ll see output similar to this:
 ```shell
 TVLEmission Contract Deployed at: 0x48E5b08F29c8CB32A55610F10b244cf9f97e38CA
 ParametricToken Contract Deployed at: 0x6610E92439205f047f0986fb8686A98A6291aE2D
@@ -34,9 +40,12 @@ Paid: 0.0001908059 ETH (1908059 gas * 0.1 gwei)
 
 ✅ Sequence #1 on arbitrum-sepolia | Total Paid: 0.0001908059 ETH (1908059 gas * avg 0.1 gwei)
 ```
-Remember the "Contract Address" value, we'll need it later. Let's put it into environment:
+
+Remember the Contract Address value (0x48E5...E38CA in this example), as we will use it later.
+
+Set it as an environment variable for easier use:
 ```shell
-export CONTRACT_ADDRESS=0x48E5b08F29c8CB32A55610F10b244cf9f97e38CA
+export CONTRACT_ADDRESS=<DEPLOYED_CONTRACT_ADDRESS>
 ```
 
 

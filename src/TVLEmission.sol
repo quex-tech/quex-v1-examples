@@ -8,16 +8,10 @@ import "./ParametricToken.sol";
 address constant QUEX_CORE = 0xD8a37e96117816D43949e72B90F73061A868b387;
 IQuexActionRegistry constant quexCore = IQuexActionRegistry(QUEX_CORE);
 
-struct FlowResponse {
-    uint256 timestamp;
-    uint256 currentTVL;
-}
-
-
 contract TVLEmission is Ownable {
     address private _treasury;
     uint256 private _requestId;
-    FlowResponse lastUpdate;
+    uint256 public lastTVL;
     ParametricToken public parametricToken;
 
     constructor(address treasuryAddress) Ownable(msg.sender) {
@@ -25,24 +19,24 @@ contract TVLEmission is Ownable {
         _treasury = treasuryAddress;
     }
 
-    // We will track the requests performed by the unique request Id assigned by Quex
-    // Only keep the latest request Id
     function request(uint256 flowId) public payable onlyOwner returns (uint256) {
         _requestId = quexCore.createRequest{value: msg.value}(flowId);
         return _requestId;
     }
 
-    // Callback handling the data processing logic
+    // On request() call this contract may receive the change from Quex Core.
+    // Therefore, receive() method must be implemented
+    receive() external payable {
+        payable(owner()).call{value: msg.value}("");
+    }
+
+
     function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType) external {
-        // Verify that the sender is indeed Quex
         require(msg.sender == QUEX_CORE, "Only Quex Proxy can push data");
-        // Verify that the request was initiated on-chain, rather than off-chain
         require(idType == IdType.RequestId, "Return type mismatch");
-        // Verify that the response corresponds to our request
         require(receivedRequestId == _requestId, "Unknown request ID");
-        // Use the data. Decode and mint tokens
-        lastUpdate = abi.decode(response.value, (FlowResponse));
-        parametricToken.mint(_treasury, lastUpdate.currentTVL);
+        lastTVL = abi.decode(response.value, (uint256));
+        parametricToken.mint(_treasury, lastTVL);
         return;
     }
 }

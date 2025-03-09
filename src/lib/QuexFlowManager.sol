@@ -35,6 +35,14 @@ abstract contract QuexFlowManager is Ownable {
     }
 
     /**
+     * @notice Retrieves the flow ID
+     * @return The flow ID of the contract
+     */
+    function getFlowId() external view returns (uint256) {
+        return _flowId;
+    }
+
+    /**
      * @notice Sets the flow ID (can only be set once)
      * @param flowId The unique identifier for the flow.
      */

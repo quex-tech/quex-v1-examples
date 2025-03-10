@@ -1,4 +1,3 @@
-
 ## Prepare environment
 
 Install [openzeppelin](https://docs.openzeppelin.com/contracts/5.x/) contracts:
@@ -14,10 +13,10 @@ forge install quex-tech/quex-v1-interfaces
 ```
 
 Put your private key to environment variables;
+
 ```shell
 export SECRET=<0xYourPrivateKey>
 ```
-
 
 ## Build and deploy contracts
 
@@ -28,6 +27,7 @@ forge script script/DeployTVLEmissionScript.s.sol --broadcast
 ```
 
 If successful, you’ll see output similar to this:
+
 ```shell
 TVLEmission Contract Deployed at: 0x48E5b08F29c8CB32A55610F10b244cf9f97e38CA
 ParametricToken Contract Deployed at: 0x6610E92439205f047f0986fb8686A98A6291aE2D
@@ -44,15 +44,16 @@ Paid: 0.0001908059 ETH (1908059 gas * 0.1 gwei)
 Remember the Contract Address value (0x48E5...E38CA in this example), as we will use it later.
 
 Set it as an environment variable for easier use:
+
 ```shell
 export CONTRACT_ADDRESS=<DEPLOYED_CONTRACT_ADDRESS>
 ```
 
+## Make a request
 
-TODO: flow id creation
-
-Export flow id to environment variable for easier use:
+Make a request using the build-in script:
 ```shell
-export FLOW_ID=<0x000....flow_d>
+forge script script/Request.s.sol --broadcast
 ```
 
+Wait for a short period of time and check your balance - you shold get 

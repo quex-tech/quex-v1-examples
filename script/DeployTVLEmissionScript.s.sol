@@ -22,6 +22,10 @@ contract DeployTVLEmissionScript is Script {
         address parametricTokenAddress = address(tvlEmission.parametricToken());
         console.log("ParametricToken Contract Deployed at:", parametricTokenAddress);
 
+        console.log("===== Next steps ====");
+        console.log("Save contact address to environment variables to use it in requests function:");
+        console.log(string(abi.encodePacked("export CONTRACT_ADDRESS=", vm.toString(address(tvlEmission)))));
+
         vm.stopBroadcast();
     }
 }

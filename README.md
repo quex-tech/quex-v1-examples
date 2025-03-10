@@ -49,3 +49,10 @@ export CONTRACT_ADDRESS=<DEPLOYED_CONTRACT_ADDRESS>
 ```
 
 
+TODO: flow id creation
+
+Export flow id to environment variable for easier use:
+```shell
+export FLOW_ID=<0x000....flow_d>
+```
+

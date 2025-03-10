@@ -21,14 +21,14 @@ contract RequestScript is Script {
         uint256 privateKey = vm.envUint("SECRET");
         address contractAddress = vm.envAddress("CONTRACT_ADDRESS");
         TVLEmission target = TVLEmission(payable(contractAddress));
+        uint256 currentFlowId = target.getFlowId();
 
-        console.log("Flow id:", flowIdStr);
         console.log("Contract address:", contractAddress);
         console.log("Total fee:", totalFee);
 
         vm.startBroadcast(privateKey);
-        uint256 currentFlowId = target.getFlowId();
-        if (target.getFlowId() == 0) {
+        if (currentFlowId == 0) {
+            console.log("Flow id is empty. Setting it to:", flowIdStr);
             target.setFlowId(flowId);
         }
         target.request{value: totalFee}();

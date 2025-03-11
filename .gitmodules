@@ -1,6 +1,0 @@
-[submodule "tvl-emission/lib/forge-std"]
-	path = tvl-emission/lib/forge-std
-	url = https://github.com/foundry-rs/forge-std
-[submodule "tvl-emission/lib/openzeppelin-contracts"]
-	path = tvl-emission/lib/openzeppelin-contracts
-	url = https://github.com/OpenZeppelin/openzeppelin-contracts

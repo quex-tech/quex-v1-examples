@@ -1,32 +1,38 @@
-## Prepare environment
+# Intro
 
-Install [openzeppelin](https://docs.openzeppelin.com/contracts/5.x/) contracts:
+This project demonstrates how to use Quex data oracles to issue parametric emission tokens. Check the exploration of this example in our [documentation](https://docs.quex.tech/developers/getting_started).  
+It includes Solidity contracts that implement ERC-20 token emissions, where the number of tokens issued corresponds to the Total Value Locked (TVL) of the DYDX protocol, as reported by [DeFiLlama](https://defillama.com/protocol/dydx).
+
+## Set Up
+
+Ensure that [Foundry](https://book.getfoundry.sh) (Forge) is correctly installed and up to date. You can update Foundry by running:
 
 ```shell
-forge install OpenZeppelin/openzeppelin-contracts
+foundryup
 ```
 
-Install Quex interfaces:
-
+Then, install the project dependencies using Forge:
 ```shell
-forge install quex-tech/quex-v1-interfaces
+forge install
 ```
 
-Put your private key to environment variables;
+## Prepare Environment
+
+To deploy contracts and interact with the data oracle, you need a wallet with gas tokens on **Arbitrum Sepolia**. Set your private key as an environment variable for further use:
 
 ```shell
 export SECRET=<0xYourPrivateKey>
 ```
 
-## Build and deploy contracts
+## Build and Deploy Contracts
 
-Run the following command to build and deploy the contracts:
+Run the `DeployTVLEmissionScript` to build and deploy the ERC-20 token, the token emission contract, and create a data flow for verifiable Quex HTTPS responses:
 
 ```shell
 forge script script/DeployTVLEmissionScript.s.sol --broadcast
 ```
 
-If successful, you’ll see output similar to this:
+If successful, the output will look similar to:
 
 ```shell
 TVLEmission Contract Deployed at: 0x48E5b08F29c8CB32A55610F10b244cf9f97e38CA
@@ -41,19 +47,20 @@ Paid: 0.0001908059 ETH (1908059 gas * 0.1 gwei)
 ✅ Sequence #1 on arbitrum-sepolia | Total Paid: 0.0001908059 ETH (1908059 gas * avg 0.1 gwei)
 ```
 
-Remember the Contract Address value (0x48E5...E38CA in this example), as we will use it later.
-
-Set it as an environment variable for easier use:
+We'll need the deployed contract address (`0x48E5...E38CA` in this example) for further requests. Set it as an environment variable:
 
 ```shell
 export CONTRACT_ADDRESS=<DEPLOYED_CONTRACT_ADDRESS>
 ```
 
-## Make a request
+## Make a Request
 
-Make a request using the build-in script:
+After that, make a request using the built-in script:
+
 ```shell
 forge script script/Request.s.sol --broadcast
 ```
 
-Wait for a short period of time and check your balance - you shold get 
+## Check Your Balance
+
+Wait for a short period of time and check your balance - you'll receive freshly minted `TVLT` tokens in the amount equivalent to the current TVL of the DyDx protocol!

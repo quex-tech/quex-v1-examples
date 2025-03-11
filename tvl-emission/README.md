@@ -3,7 +3,7 @@
 Install [openzeppelin](https://docs.openzeppelin.com/contracts/5.x/) contracts:
 
 ```shell
-forge install @openzeppelin/contracts
+forge install OpenZeppelin/openzeppelin-contracts
 ```
 
 Install Quex interfaces:

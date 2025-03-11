@@ -42,18 +42,10 @@ contract TVLEmission is QuexFlowManager {
             parameters: new QueryParameter[](0),
             body: ""
         });
+        bytes32 patchId = 0;
         bytes32 requestId = oraclePool.addRequest(request);
-        HTTPPrivatePatch memory privatePatch = HTTPPrivatePatch({
-            pathSuffix: "",
-            headers: new RequestHeaderPatch[](0),
-            parameters: new QueryParameterPatch[](0),
-            body: "",
-            tdAddress: address(0)
-        });
-        bytes32 patchId = oraclePool.addPrivatePatch(privatePatch);
-//        bytes32 schemaId = oraclePool.addResponseSchema('. * 1e18 | round');
-        bytes32 schemaId = oraclePool.addResponseSchema('floor');
-        bytes32 filterId = oraclePool.addJqFilter('uint256');
+        bytes32 schemaId = oraclePool.addResponseSchema('uint256');
+        bytes32 filterId = oraclePool.addJqFilter('. * 1000000000000000000 | round');
         uint256 actionId = oraclePool.addActionByParts(requestId, patchId, schemaId, filterId);
         Flow memory flow = Flow({
             gasLimit: 700000,

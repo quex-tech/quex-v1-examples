@@ -8,12 +8,8 @@ contract RequestScript is Script {
     function run() external {
         vm.createSelectFork("arbitrum-sepolia");
 
-        // Calculate gas cost
-        // TODO automate this step
-        uint256 nativeFee = 30000000000000;
-        uint256 gasToCover = 810000;
-        uint256 gasPrice = 1879871425;
-        uint256 totalFee = nativeFee + (gasPrice * gasToCover * 2);
+        // Maximum fee to spend. All unused money will be returned to the sender
+        uint256 totalFee = 5000000000000000;
 
         // Get parameters from environment
         uint256 privateKey = vm.envUint("SECRET");

@@ -44,8 +44,8 @@ contract TVLEmission is QuexFlowManager {
         });
         bytes32 patchId = 0;
         bytes32 requestId = oraclePool.addRequest(request);
-        bytes32 schemaId = oraclePool.addResponseSchema('uint256');
-        bytes32 filterId = oraclePool.addJqFilter('. * 1000000000000000000 | round');
+        bytes32 schemaId = oraclePool.addResponseSchema("uint256");
+        bytes32 filterId = oraclePool.addJqFilter(". * 1000000000000000000 | round");
         uint256 actionId = oraclePool.addActionByParts(requestId, patchId, schemaId, filterId);
         Flow memory flow = Flow({
             gasLimit: 700000,
@@ -63,8 +63,9 @@ contract TVLEmission is QuexFlowManager {
      * @param receivedRequestId The ID of the request that is being processed.
      * @param response The response data from Quex, expected to contain the latest TVL value.
      */
-    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType /* idType */)
-    external verifyResponse(receivedRequestId)
+    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType /* idType */ )
+        external
+        verifyResponse(receivedRequestId)
     {
         require(block.timestamp >= lastRequestTime + REQUEST_COOLDOWN, "Request cooldown active");
         uint256 lastTVL = abi.decode(response.value, (uint256));

@@ -46,7 +46,7 @@ abstract contract QuexFlowManager is Ownable {
      * @notice Sets the flow ID (can only be set once)
      * @param flowId The unique identifier for the flow.
      */
-    function setFlowId(uint256 flowId) external onlyOwner virtual {
+    function setFlowId(uint256 flowId) external virtual onlyOwner {
         require(_flowId == 0, "Flow ID is already set");
         _flowId = flowId;
     }
@@ -78,7 +78,7 @@ abstract contract QuexFlowManager is Ownable {
      * @dev This contract may receive excess funds from Quex Core after calling `request()`.
      *      Therefore, the `receive()` function must be implemented to properly handle refunds.
      */
-    receive() external virtual payable {
+    receive() external payable virtual {
         (bool success,) = payable(owner()).call{value: msg.value}("");
         require(success, "Transfer failed");
     }

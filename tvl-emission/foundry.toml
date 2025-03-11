@@ -3,5 +3,12 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
+remappings = [
+    "@openzeppelin/=lib/openzeppelin-contracts/",
+    "quex-v1-interfaces/=lib/quex-v1-interfaces/",
+    "forge-std/=lib/forge-std/src/"
+]
+
 [rpc_endpoints]
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
+

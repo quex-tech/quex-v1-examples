@@ -63,9 +63,9 @@ contract TVLEmission is QuexFlowManager {
      * @param receivedRequestId The ID of the request that is being processed.
      * @param response The response data from Quex, expected to contain the latest TVL value.
      */
-    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType /* idType */ )
+    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType)
         external
-        verifyResponse(receivedRequestId)
+        verifyResponse(receivedRequestId, idType)
     {
         require(block.timestamp >= lastRequestTime + REQUEST_COOLDOWN, "Request cooldown active");
         uint256 lastTVL = abi.decode(response.value, (uint256));

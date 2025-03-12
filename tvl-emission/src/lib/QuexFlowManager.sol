@@ -57,9 +57,10 @@ abstract contract QuexFlowManager is Ownable {
      *      Also verifies that the response corresponds to the latest request.
      * @param receivedRequestId The ID of the request associated with this response.
      */
-    modifier verifyResponse(uint256 receivedRequestId) {
+    modifier verifyResponse(uint256 receivedRequestId, IdType idType) {
         require(msg.sender == address(quexCore), "Only Quex Proxy can push data");
         require(receivedRequestId == _requestId, "Unknown request ID");
+        require(idType == IdType.RequestId, "Return type mismatch");
         _;
     }
 

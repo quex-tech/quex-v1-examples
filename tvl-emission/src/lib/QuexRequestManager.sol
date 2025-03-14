@@ -16,7 +16,7 @@ import "quex-v1-interfaces/interfaces/core/IQuexActionRegistry.sol";
  *
  * To modify the default behavior, override the relevant methods in a derived contract.
  */
-abstract contract QuexFlowManager is Ownable {
+abstract contract QuexRequestManager is Ownable {
     /// @notice Reference to the Quex Action Registry contract
     IQuexActionRegistry public quexCore;
 

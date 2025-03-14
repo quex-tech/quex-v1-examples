@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 import "./ParametricToken.sol";
-import "./lib/QuexFlowManager.sol";
+import "./lib/QuexRequestManager.sol";
 import "quex-v1-interfaces/interfaces/oracles/IRequestOraclePool.sol";
 import "quex-v1-interfaces/interfaces/core/IFlowRegistry.sol";
 
@@ -11,7 +11,7 @@ import "quex-v1-interfaces/interfaces/core/IFlowRegistry.sol";
  * @dev This contract manages token emissions based on Total Value Locked (TVL) data retrieved from Quex.
  * It ensures that emissions can only be processed once per day to prevent excessive token minting.
  */
-contract TVLEmission is QuexFlowManager {
+contract TVLEmission is QuexRequestManager {
     address private _quexCore;
     address private _oraclePool;
     address private _treasuryAddress;
@@ -19,7 +19,7 @@ contract TVLEmission is QuexFlowManager {
     uint256 public lastRequestTime;
     uint256 private constant REQUEST_COOLDOWN = 1 days;
 
-    constructor(address treasuryAddress, address quexCore, address oraclePool) QuexFlowManager(quexCore) {
+    constructor(address treasuryAddress, address quexCore, address oraclePool) QuexRequestManager(quexCore) {
         parametricToken = new ParametricToken();
         _treasuryAddress = treasuryAddress;
         _quexCore = quexCore;

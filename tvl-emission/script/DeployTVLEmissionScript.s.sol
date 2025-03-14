@@ -5,6 +5,9 @@ import "forge-std/Script.sol";
 import "../src/ParametricToken.sol";
 import "../src/TVLEmission.sol";
 
+address constant QUEX_CORE = 0xD8a37e96117816D43949e72B90F73061A868b387;
+address constant ORACLE_POOL = 0x957E16D5bfa78799d79b86bBb84b3Ca34D986439;
+
 contract DeployTVLEmissionScript is Script {
     function run() external {
         // Prepare to broadcast contracts
@@ -15,7 +18,7 @@ contract DeployTVLEmissionScript is Script {
         vm.startBroadcast(privateKey);
 
         // Deploy TVLEmission with the deployer's address as treasury
-        TVLEmission tvlEmission = new TVLEmission(deployer);
+        TVLEmission tvlEmission = new TVLEmission(deployer, QUEX_CORE, ORACLE_POOL);
         console.log("TVLEmission Contract Deployed at:", address(tvlEmission));
 
         // Retrieve the ParametricToken address from TVLEmission

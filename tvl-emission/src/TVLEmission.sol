@@ -6,23 +6,24 @@ import "./lib/QuexFlowManager.sol";
 import "quex-v1-interfaces/interfaces/oracles/IRequestOraclePool.sol";
 import "quex-v1-interfaces/interfaces/core/IFlowRegistry.sol";
 
-address constant QUEX_CORE = 0xD8a37e96117816D43949e72B90F73061A868b387;
-address constant ORACLE_POOL = 0x957E16D5bfa78799d79b86bBb84b3Ca34D986439;
-
 /**
  * @title TVLEmission
  * @dev This contract manages token emissions based on Total Value Locked (TVL) data retrieved from Quex.
  * It ensures that emissions can only be processed once per day to prevent excessive token minting.
  */
 contract TVLEmission is QuexFlowManager {
+    address private _quexCore;
+    address private _oraclePool;
     address private _treasuryAddress;
     ParametricToken public parametricToken;
     uint256 public lastRequestTime;
     uint256 private constant REQUEST_COOLDOWN = 1 days;
 
-    constructor(address treasuryAddress) QuexFlowManager(QUEX_CORE) {
+    constructor(address treasuryAddress, address quexCore, address oraclePool) QuexFlowManager(quexCore) {
         parametricToken = new ParametricToken();
         _treasuryAddress = treasuryAddress;
+        _quexCore = quexCore;
+        _oraclePool = oraclePool;
         generateFlow();
     }
 
@@ -31,8 +32,8 @@ contract TVLEmission is QuexFlowManager {
      * and rounds to the nearest integer.
      */
     function generateFlow() private onlyOwner {
-        IRequestOraclePool oraclePool = IRequestOraclePool(ORACLE_POOL);
-        IFlowRegistry flowRegistry = IFlowRegistry(QUEX_CORE);
+        IRequestOraclePool oraclePool = IRequestOraclePool(_oraclePool);
+        IFlowRegistry flowRegistry = IFlowRegistry(_quexCore);
 
         HTTPRequest memory request = HTTPRequest({
             method: RequestMethod.Get,
@@ -50,7 +51,7 @@ contract TVLEmission is QuexFlowManager {
         Flow memory flow = Flow({
             gasLimit: 700000,
             actionId: actionId,
-            pool: ORACLE_POOL,
+            pool: _oraclePool,
             consumer: address(this),
             callback: this.processResponse.selector
         });

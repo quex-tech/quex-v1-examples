@@ -46,7 +46,7 @@ abstract contract QuexRequestManager is Ownable {
      * @notice Sets the flow ID (can only be set once)
      * @param flowId The unique identifier for the flow.
      */
-    function setFlowId(uint256 flowId) external virtual onlyOwner {
+    function setFlowId(uint256 flowId) public virtual onlyOwner {
         require(_flowId == 0, "Flow ID is already set");
         _flowId = flowId;
     }

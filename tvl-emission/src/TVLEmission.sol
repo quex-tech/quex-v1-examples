@@ -55,7 +55,8 @@ contract TVLEmission is QuexRequestManager {
             consumer: address(this),
             callback: this.processResponse.selector
         });
-        _flowId = flowRegistry.createFlow(flow);
+        uint256 flowId = flowRegistry.createFlow(flow);
+        setFlowId(flowId);
     }
 
     /**

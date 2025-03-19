@@ -1,7 +1,6 @@
 [submodule "tvl-emission/lib/quex-v1-interfaces"]
 	path = tvl-emission/lib/quex-v1-interfaces
 	url = https://github.com/quex-tech/quex-v1-interfaces
-	branch = lib_request_manager
 [submodule "tvl-emission/lib/openzeppelin-contracts"]
 	path = tvl-emission/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts

@@ -2,9 +2,9 @@
 pragma solidity ^0.8.22;
 
 import "./ParametricToken.sol";
-import "./lib/QuexRequestManager.sol";
-import "quex-v1-interfaces/interfaces/oracles/IRequestOraclePool.sol";
-import "quex-v1-interfaces/interfaces/core/IFlowRegistry.sol";
+import "quex-v1-interfaces/src/interfaces/oracles/IRequestOraclePool.sol";
+import "quex-v1-interfaces/src/interfaces/core/IFlowRegistry.sol";
+import "quex-v1-interfaces/src/libraries/QuexRequestManager.sol";
 
 /**
  * @title TVLEmission

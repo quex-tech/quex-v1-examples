@@ -2,9 +2,9 @@
 pragma solidity ^0.8.22;
 
 import "./ParametricToken.sol";
-import "quex-v1-interfaces/src/interfaces/oracles/IRequestOraclePool.sol";
-import "quex-v1-interfaces/src/interfaces/core/IFlowRegistry.sol";
 import "quex-v1-interfaces/src/libraries/QuexRequestManager.sol";
+
+using FlowBuilder for FlowBuilder.FlowConfig;
 
 /**
  * @title TVLEmission
@@ -12,8 +12,6 @@ import "quex-v1-interfaces/src/libraries/QuexRequestManager.sol";
  * It ensures that emissions can only be processed once per day to prevent excessive token minting.
  */
 contract TVLEmission is QuexRequestManager {
-    address private _quexCore;
-    address private _oraclePool;
     address private _treasuryAddress;
     ParametricToken public parametricToken;
     uint256 public lastRequestTime;
@@ -22,41 +20,19 @@ contract TVLEmission is QuexRequestManager {
     constructor(address treasuryAddress, address quexCore, address oraclePool) QuexRequestManager(quexCore) {
         parametricToken = new ParametricToken();
         _treasuryAddress = treasuryAddress;
-        _quexCore = quexCore;
-        _oraclePool = oraclePool;
-        generateFlow();
+        setUpFlow(quexCore, oraclePool);
     }
 
     /**
      * @notice Creates a new flow to fetch TVL data from the DeFi Llama API for dydx, multiplies it by 1e18,
      * and rounds to the nearest integer.
      */
-    function generateFlow() private onlyOwner {
-        IRequestOraclePool oraclePool = IRequestOraclePool(_oraclePool);
-        IFlowRegistry flowRegistry = IFlowRegistry(_quexCore);
-
-        HTTPRequest memory request = HTTPRequest({
-            method: RequestMethod.Get,
-            host: "api.llama.fi",
-            path: "/tvl/dydx",
-            headers: new RequestHeader[](0),
-            parameters: new QueryParameter[](0),
-            body: ""
-        });
-        bytes32 patchId = 0;
-        bytes32 requestId = oraclePool.addRequest(request);
-        bytes32 schemaId = oraclePool.addResponseSchema("uint256");
-        bytes32 filterId = oraclePool.addJqFilter(". * 1000000000000000000 | round");
-        uint256 actionId = oraclePool.addActionByParts(requestId, patchId, schemaId, filterId);
-        Flow memory flow = Flow({
-            gasLimit: 700000,
-            actionId: actionId,
-            pool: _oraclePool,
-            consumer: address(this),
-            callback: this.processResponse.selector
-        });
-        uint256 flowId = flowRegistry.createFlow(flow);
-        setFlowId(flowId);
+    function setUpFlow(address quexCore, address oraclePool) private onlyOwner {
+        FlowBuilder.FlowConfig memory config = FlowBuilder.create(quexCore, oraclePool, "api.llama.fi", "/tvl/dydx");
+        config = config.withFilter(". * 1000000000000000000 | round");
+        config = config.withSchema("uint256");
+        config = config.withCallback(address(this), this.processResponse.selector);
+        registerFlow(config);
     }
 
     /**

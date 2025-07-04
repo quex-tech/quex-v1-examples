@@ -3,8 +3,9 @@ pragma solidity ^0.8.22;
 
 import "./ParametricToken.sol";
 import "quex-v1-interfaces/src/libraries/QuexRequestManager.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-using FlowBuilder for FlowBuilder.FlowConfig;
+    using FlowBuilder for FlowBuilder.FlowConfig;
 
 /**
  * @title TVLEmission
@@ -17,22 +18,45 @@ contract TVLEmission is QuexRequestManager {
     uint256 public lastRequestTime;
     uint256 private constant REQUEST_COOLDOWN = 1 days;
 
-    constructor(address treasuryAddress, address quexCore, address oraclePool) QuexRequestManager(quexCore) {
+    constructor(address treasuryAddress, address quexCore, address oraclePool) payable QuexRequestManager(quexCore) {
         parametricToken = new ParametricToken();
         _treasuryAddress = treasuryAddress;
-        setUpFlow(quexCore, oraclePool);
+        setUp(quexCore, oraclePool);
     }
 
     /**
      * @notice Creates a new flow to fetch TVL data from the DeFi Llama API for dydx, multiplies it by 1e18,
      * and rounds to the nearest integer.
      */
-    function setUpFlow(address quexCore, address oraclePool) private onlyOwner {
+    function setUp(address quexCore, address oraclePool) private onlyOwner {
+        require(msg.value > 0, "Please attach some Eth to deposit subscription");
+
+        // set up flow
         FlowBuilder.FlowConfig memory config = FlowBuilder.create(quexCore, oraclePool, "api.llama.fi", "/tvl/dydx");
         config = config.withFilter(". * 1000000000000000000 | round");
         config = config.withSchema("uint256");
         config = config.withCallback(address(this), this.processResponse.selector);
         registerFlow(config);
+
+        // set up subscription that will be used to charge fees
+        createSubscription2();
+    }
+
+    /**
+  * @notice Set up subscription
+         */
+    function createSubscription2() internal virtual onlyOwner {
+        IDepositManager depositManager = IDepositManager(quexCoreAddress);
+        _subscriptionId = depositManager.createSubscription();
+        depositManager.addConsumer(_subscriptionId, address(this));
+        depositManager.setOwner(_subscriptionId, owner());
+        depositManager.deposit{value: msg.value}(_subscriptionId);
+    }
+
+    function withdraw() public onlyOwner {
+        require(msg.sender == owner(), string.concat("Only owner can withdraw. msg.sender: ", Strings.toHexString(msg.sender), ", owner: ", Strings.toHexString(owner())));
+        IDepositManager depositManager = IDepositManager(quexCoreAddress);
+        depositManager.withdraw(_subscriptionId, owner());
     }
 
     /**
@@ -41,13 +65,11 @@ contract TVLEmission is QuexRequestManager {
      * @param receivedRequestId The ID of the request that is being processed.
      * @param response The response data from Quex, expected to contain the latest TVL value.
      */
-    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType)
-        external
-        verifyResponse(receivedRequestId, idType)
-    {
+    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType) external verifyResponse(receivedRequestId, idType)  {
         require(block.timestamp >= lastRequestTime + REQUEST_COOLDOWN, "Request cooldown active");
         uint256 lastTVL = abi.decode(response.value, (uint256));
         parametricToken.mint(_treasuryAddress, lastTVL);
         lastRequestTime = block.timestamp;
     }
+
 }

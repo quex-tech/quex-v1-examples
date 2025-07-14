@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import "./ParametricToken.sol";
 import "quex-v1-interfaces/src/libraries/QuexRequestManager.sol";
+
 import "@openzeppelin/contracts/utils/Strings.sol";
 
     using FlowBuilder for FlowBuilder.FlowConfig;
@@ -39,24 +40,7 @@ contract TVLEmission is QuexRequestManager {
         registerFlow(config);
 
         // set up subscription that will be used to charge fees
-        createSubscription2();
-    }
-
-    /**
-  * @notice Set up subscription
-         */
-    function createSubscription2() internal virtual onlyOwner {
-        IDepositManager depositManager = IDepositManager(quexCoreAddress);
-        _subscriptionId = depositManager.createSubscription();
-        depositManager.addConsumer(_subscriptionId, address(this));
-        depositManager.setOwner(_subscriptionId, owner());
-        depositManager.deposit{value: msg.value}(_subscriptionId);
-    }
-
-    function withdraw() public onlyOwner {
-        require(msg.sender == owner(), string.concat("Only owner can withdraw. msg.sender: ", Strings.toHexString(msg.sender), ", owner: ", Strings.toHexString(owner())));
-        IDepositManager depositManager = IDepositManager(quexCoreAddress);
-        depositManager.withdraw(_subscriptionId, owner());
+        createSubscription(msg.value);
     }
 
     /**
@@ -65,7 +49,7 @@ contract TVLEmission is QuexRequestManager {
      * @param receivedRequestId The ID of the request that is being processed.
      * @param response The response data from Quex, expected to contain the latest TVL value.
      */
-    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType) external verifyResponse(receivedRequestId, idType)  {
+    function processResponse(uint256 receivedRequestId, DataItem memory response, IdType idType) external verifyResponse(receivedRequestId, idType) {
         require(block.timestamp >= lastRequestTime + REQUEST_COOLDOWN, "Request cooldown active");
         uint256 lastTVL = abi.decode(response.value, (uint256));
         parametricToken.mint(_treasuryAddress, lastTVL);

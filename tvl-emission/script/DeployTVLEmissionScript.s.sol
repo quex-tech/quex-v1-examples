@@ -26,7 +26,7 @@ contract DeployTVLEmissionScript is Script {
         address parametricTokenAddress = address(tvlEmission.parametricToken());
         console.log("ParametricToken Contract Deployed at:", parametricTokenAddress);
 
-        // For tet purposes we make arequest to Quex core and withdraw money from the subscription
+        // For test purposes we make a request to Quex core and withdraw money from the subscription
         tvlEmission.request();
         tvlEmission.withdraw();
         vm.stopBroadcast();

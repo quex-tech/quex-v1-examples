@@ -19,5 +19,8 @@
       "name": "v5.5.0",
       "rev": "fcbae5394ae8ad52d8e580a3477db99814b9d565"
     }
+  },
+  "lib/quex-v1-interfaces": {
+    "rev": "9d454bfe1e0c632d1b15caadf3a76c5bd0f12f2f"
   }
 }

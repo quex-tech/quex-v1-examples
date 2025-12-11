@@ -59,7 +59,7 @@ python encrypt_data.py --data "Bearer sk-..." --td-public-key 0x71d4...
 Run the `DeployOpenAIScript` to build and deploy the OpenAI integration contract and create a data flow:
 
 ```shell
-forge script script/DeployOpenAIScript.s.sol --broadcast
+forge script script/DeployOpenAIScript.s.sol --broadcast --rpc-url arbitrum-sepolia
 ```
 
 If successful, the output will look similar to:
@@ -86,7 +86,7 @@ export CONTRACT_ADDRESS=<DEPLOYED_CONTRACT_ADDRESS>
 After deployment, make a request using the built-in script:
 
 ```shell
-forge script script/Request.s.sol --broadcast
+forge script script/Request.s.sol --broadcast --rpc-url arbitrum-sepolia
 ```
 
 This will send a request to OpenAI API through Quex oracles. The contract will receive the response and store the sentiment score.

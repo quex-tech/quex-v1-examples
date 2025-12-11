@@ -13,7 +13,7 @@ contract DeployOpenAIScript is Script {
         // Prepare to broadcast contracts
         uint256 privateKey = vm.envUint("SECRET");
         address deployer = vm.addr(privateKey);
-        uint256 deposit = 1_000_000_000_000_000_000_000;
+        uint256 deposit = 50_000_000_000_000_000; // 0.05 ETH
 
         // Get encrypted API key from environment variable
         // The encrypted API key should be provided as hex string (e.g., "0x...")

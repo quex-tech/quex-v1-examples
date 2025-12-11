@@ -31,7 +31,7 @@ To deploy contracts and interact with the data oracle, you need:
 
 1. A wallet with gas tokens on **Arbitrum Sepolia**
 2. An OpenAI API key
-3. A Trust Domain (TD) address and public key that you can find [here](../general/addresses.md)
+3. A Trust Domain (TD) address and public key that you can find [here](https://docs.quex.tech/general-information/addresses#arbitrum-sepolia)
 
 Set your private key as an environment variable:
 
